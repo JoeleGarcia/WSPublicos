@@ -1,19 +1,16 @@
 # ----------------------------------------------------
-# STAGE 1
+# STAGE 1: Build 
 # ----------------------------------------------------
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /app
 
 COPY ["APEC.WSPublicos.sln", "."]
-COPY ["**/*.csproj", "./"]
-
-COPY ["APEC.WSPublicos.API/AppDbContextSqlite.db", "APEC.WSPublicos.API/"]
-
-RUN dotnet restore "APEC.WSPublicos.sln"
 
 COPY . .
 
-WORKDIR "/app/APEC.WSPublicos.API"
+RUN dotnet restore "APEC.WSPublicos.sln"
+
+WORKDIR "/app/APEC.WSPublicos.API" 
 
 RUN dotnet publish "APEC.WSPublicos.API.csproj" \
     -r linux-x64 \
