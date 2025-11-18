@@ -11,7 +11,7 @@ services:
       - "9880:9880"
       
     # Volumen persistente para la base de datos (SQLite)
-   ## volumes:
-    ##  - ./output:/app 
+    volumes:
+      - ./output/AppDbContextSqlite.db:/app/AppDbContextSqlite.db
       
     restart: always
