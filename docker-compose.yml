@@ -1,0 +1,16 @@
+
+services:
+  ws_publicos_api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: apec-ws-publicos-aot
+    
+    ports:
+      - "9880:9880"
+      
+    # Volumen persistente para la salida
+    volumes:
+      - ./output-aot:/app 
+      
+    restart: always
