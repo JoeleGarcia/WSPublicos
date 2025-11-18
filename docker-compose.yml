@@ -7,13 +7,12 @@ services:
       dockerfile: Dockerfile
     container_name: apec-ws-publicos-api-standard
     
-    # Mapea el puerto 80 del host al puerto 8080 del contenedor
+    # Mapea el puerto 80 del host al puerto interno 9880 del contenedor
     ports:
       - "9880:9880"
       
-    # Volumen persistente para la base de datos (si usas SQLite)
-    # Crea una carpeta local './output' y la mapea al /app del contenedor
+    # Volumen persistente para la base de datos (SQLite)
     volumes:
-      - /home/ubuntu/wspublico:/app 
+      - ./output:/app 
       
     restart: always

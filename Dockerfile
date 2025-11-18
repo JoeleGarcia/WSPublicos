@@ -12,13 +12,16 @@ COPY . .
 RUN dotnet restore "APEC.WSPublicos.sln"
 
 # 3. Publica el proyecto de la API
-
 WORKDIR "/app/APEC.WSPublicos.API" 
 
-RUN ls -al
-
-# Publicamos directamente a la carpeta raíz /publish.
+# Publicamos a una ruta absoluta (/publish)
 RUN dotnet publish -c Release -o /publish /p:UseAppHost=false
+
+# === PUNTO DE DEPURACIÓN 1: Verificar el resultado de la publicación ===
+RUN echo "--- Contenido del directorio /publish (Etapa Build) ---"
+RUN ls -al /publish
+# ----------------------------------------------------------------------
+
 
 # ----------------------------------------------------
 # STAGE 2: Final (Runtime)
@@ -26,14 +29,18 @@ RUN dotnet publish -c Release -o /publish /p:UseAppHost=false
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 
-# Copiamos todos los archivos publicados desde la ruta /publish a la carpeta /app
+# Copiamos todos los archivos publicados desde /publish a la carpeta /app
 COPY --from=build /publish .
+
+# === PUNTO DE DEPURACIÓN 2: Verificar la copia en la Etapa Final ===
+RUN echo "--- Contenido del directorio /app (Etapa Final) ---"
+RUN ls -al /app
+# ------------------------------------------------------------------
+
 
 # Configuración del puerto 9880
 ENV ASPNETCORE_URLS=http://+:9880
 EXPOSE 9880
-
-RUN ls
 
 # Define el punto de entrada para iniciar la aplicación
 ENTRYPOINT ["dotnet", "APEC.WSPublicos.API.dll"]
