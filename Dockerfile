@@ -50,4 +50,4 @@ ENV ASPNETCORE_URLS=http://+:9880
 EXPOSE 9880
 
 # Define el punto de entrada para iniciar la aplicación
-ENTRYPOINT ["dotnet", "/app/APEC.WSPublicos.API.dll"]
+ENTRYPOINT ["dotnet", "--info"]
