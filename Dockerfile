@@ -6,7 +6,7 @@ WORKDIR /app
 
 # 1. Copia el archivo de la solución y todo el código fuente
 COPY ["APEC.WSPublicos.sln", "."]
-COPY . .
+COPY . ./
 
 # 2. Restaura las dependencias
 RUN dotnet restore "APEC.WSPublicos.sln"
@@ -16,10 +16,11 @@ WORKDIR "/app/APEC.WSPublicos.API"
 
 # Publicamos a una ruta absoluta (/publish)
 RUN dotnet publish -c Release -o /publish /p:UseAppHost=false
-
+COPY AppDbContextSqlite.db /publish/
 # === PUNTO DE DEPURACIÓN 1: Verificar el resultado de la publicación ===
 RUN echo "--- Contenido del directorio /publish (Etapa Build) ---"
 RUN ls -al /publish
+
 # ----------------------------------------------------------------------
 
 
@@ -37,6 +38,7 @@ RUN echo "--- Contenido del directorio /app (Etapa Final) ---"
 RUN ls -al /app
 # ------------------------------------------------------------------
 
+RUN ls -al /
 
 # Configuración del puerto 9880
 ENV ASPNETCORE_URLS=http://+:9880
