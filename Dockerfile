@@ -1,12 +1,12 @@
 # ----------------------------------------------------
 # STAGE 1: Build 
 # ----------------------------------------------------
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /app
 
-# 1. Copia el archivo de la solución y todo el código fuente
+# 1. Copia el archivo de la solución y todo el código fuente.
 COPY ["APEC.WSPublicos.sln", "."]
-COPY . ./
+COPY . .
 
 # 2. Restaura las dependencias
 RUN dotnet restore "APEC.WSPublicos.sln"
@@ -16,21 +16,25 @@ WORKDIR "/app/APEC.WSPublicos.API"
 
 # Publicamos a una ruta absoluta (/publish)
 RUN dotnet publish -c Release -o /publish /p:UseAppHost=false
+
+# 4. === COPIA CLAVE: Copiar la base de datos ===
+# Volvemos a la raíz del contexto y copiamos la DB a la carpeta de publicación.
+WORKDIR /app
 COPY AppDbContextSqlite.db /publish/
+
 # === PUNTO DE DEPURACIÓN 1: Verificar el resultado de la publicación ===
 RUN echo "--- Contenido del directorio /publish (Etapa Build) ---"
 RUN ls -al /publish
-
 # ----------------------------------------------------------------------
 
 
 # ----------------------------------------------------
 # STAGE 2: Final (Runtime)
 # ----------------------------------------------------
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
 
-# Copiamos todos los archivos publicados desde /publish a la carpeta /app
+# Copiamos todos los archivos publicados, incluyendo la DB y la DLL.
 COPY --from=build /publish .
 
 # === PUNTO DE DEPURACIÓN 2: Verificar la copia en la Etapa Final ===
@@ -38,7 +42,6 @@ RUN echo "--- Contenido del directorio /app (Etapa Final) ---"
 RUN ls -al /app
 # ------------------------------------------------------------------
 
-RUN ls -al /
 
 # Configuración del puerto 9880
 ENV ASPNETCORE_URLS=http://+:9880
