@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   ws_publicos_api:
@@ -12,7 +11,7 @@ services:
       - "9880:9880"
       
     # Volumen persistente para la base de datos (SQLite)
-    volumes:
-      - ./output:/app 
+   ## volumes:
+    ##  - ./output:/app 
       
     restart: always
