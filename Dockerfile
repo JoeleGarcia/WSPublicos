@@ -1,11 +1,11 @@
 # ----------------------------------------------------
 # STAGE 1: Build 
 # ----------------------------------------------------
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
 RUN apt-get update \
-    && apt-get install -y build-essential clang zlib1g
+    && apt-get install -y build-essential clang zlib1g-dev
 
 COPY ["APEC.WSPublicos.sln", "."]
 
@@ -25,7 +25,7 @@ RUN dotnet publish "APEC.WSPublicos.API.csproj" \
 # ----------------------------------------------------
 # STAGE 2
 # ----------------------------------------------------
-FROM mcr.microsoft.com/dotnet/runtime-deps:9.0-noble-chiseled AS final
+FROM mcr.microsoft.com/dotnet/runtime-deps:8.0-noble-chiseled AS final
 WORKDIR /app
 
 COPY --from=build /publish .
