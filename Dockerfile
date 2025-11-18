@@ -30,6 +30,8 @@ WORKDIR /app
 
 COPY --from=build /publish .
 
+RUN chmod +x ./APEC.WSPublicos.API
+
 ENV ASPNETCORE_URLS=http://+:9880
 
 EXPOSE 9880
