@@ -1,7 +1,7 @@
 # ----------------------------------------------------
 # STAGE 1: Build 
 # ----------------------------------------------------
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
 # 1. Copia el archivo de la solución y todo el código fuente.
@@ -33,7 +33,7 @@ RUN ls -al /publish
 # ----------------------------------------------------
 # STAGE 2: Final (Runtime)
 # ----------------------------------------------------
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 
 # Copiamos todos los archivos publicados, incluyendo la DB y la DLL.
@@ -50,4 +50,5 @@ ENV ASPNETCORE_URLS=http://+:9880
 EXPOSE 9880
 
 # Define el punto de entrada para iniciar la aplicación
-ENTRYPOINT ["dotnet", "--info"]
+# ENTRYPOINT ["dotnet", "APEC.WSPublicos.API.dll"]
+CMD ["sleep", "infinity"]
