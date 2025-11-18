@@ -5,6 +5,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /app
 
 # 1. Copia el archivo de la solución y todo el código fuente.
+# Esto incluye las carpetas de Clean Architecture.
 COPY ["APEC.WSPublicos.sln", "."]
 COPY . .
 
@@ -18,9 +19,10 @@ WORKDIR "/app/APEC.WSPublicos.API"
 RUN dotnet publish -c Release -o /publish /p:UseAppHost=false
 
 # 4. === COPIA CLAVE: Copiar la base de datos ===
-# Volvemos a la raíz del contexto y copiamos la DB a la carpeta de publicación.
+# Volvemos a la raíz del contexto (/app)
 WORKDIR /app
-COPY AppDbContextSqlite.db /publish/
+# *** RUTA CORREGIDA ***: La DB se copia desde la carpeta del proyecto API.
+COPY APEC.WSPublicos.API/AppDbContextSqlite.db /publish/ 
 
 # === PUNTO DE DEPURACIÓN 1: Verificar el resultado de la publicación ===
 RUN echo "--- Contenido del directorio /publish (Etapa Build) ---"
