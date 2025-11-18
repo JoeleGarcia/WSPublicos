@@ -4,6 +4,9 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /app
 
+RUN apt-get update \
+    && apt-get install -y build-essential clang zlib1g
+
 COPY ["APEC.WSPublicos.sln", "."]
 
 COPY . .
