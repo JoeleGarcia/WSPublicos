@@ -25,7 +25,7 @@ RUN dotnet publish "APEC.WSPublicos.API.csproj" \
 # ----------------------------------------------------
 # STAGE 2
 # ----------------------------------------------------
-FROM mcr.microsoft.com/dotnet/runtime-deps:9.0-cbl-mariner2.0-chiseled AS final
+FROM mcr.microsoft.com/dotnet/runtime-deps:9.0-noble-chiseled AS final
 WORKDIR /app
 
 COPY --from=build /publish .
