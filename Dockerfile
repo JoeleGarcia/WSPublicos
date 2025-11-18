@@ -1,40 +1,42 @@
 # ----------------------------------------------------
 # STAGE 1: Build 
+# Usamos el SDK para compilar y publicar
 # ----------------------------------------------------
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
-RUN apt-get update \
-    && apt-get install -y build-essential clang zlib1g-dev
-
+# 1. Copia el archivo de la solución y restaura las dependencias
 COPY ["APEC.WSPublicos.sln", "."]
-
 COPY . .
 
 RUN dotnet restore "APEC.WSPublicos.sln"
 
+# 2. Publica el proyecto de la API
 WORKDIR "/app/APEC.WSPublicos.API" 
 
-RUN dotnet publish "APEC.WSPublicos.API.csproj" \
-    -r linux-x64 \
-    -c Release \
-    -p:PublishAot=true \
-    --self-contained true \
-    -o /publish
+# Publicamos la aplicación en la carpeta 'out'
+RUN dotnet publish -c Release -o out /p:UseAppHost=false
 
 # ----------------------------------------------------
-# STAGE 2
+# STAGE 2: Final (Runtime)
+# Usamos la imagen de ejecución, más pequeña y segura
 # ----------------------------------------------------
-FROM mcr.microsoft.com/dotnet/runtime-deps:8.0-noble-chiseled AS final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 
-COPY --from=build /publish .
+# 1. Copia los artefactos publicados desde la etapa 'build'
+COPY --from=build /app/APEC.WSPublicos.API/out .
 
-
+# 2. Configuración y ejecución
+# El puerto 8080 es el estándar en las nuevas imágenes base
 ENV ASPNETCORE_URLS=http://+:9880
-
 EXPOSE 9880
-# ENTRYPOINT ["./APEC.WSPublicos.API"]
-ENTRYPOINT ["ls"]
 
-CMD ["/bin/sh", "-c", "echo Running..."]
+# 3. Define el punto de entrada para iniciar la aplicación
+ENTRYPOINT ["dotnet", "APEC.WSPublicos.API.dll"]
+
+# 4. Mensajes informativos (basados en tu esquema)
+# NOTA: Estos mensajes solo se ven durante la construcción de la imagen.
+RUN echo " -----------------------------------------------"
+RUN echo " Application is running at http://localhost:9880"
+RUN echo " -----------------------------------------------"

@@ -1,15 +1,18 @@
+version: '3.8'
 
 services:
   ws_publicos_api:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: apec-ws-publicos-aot
+    container_name: apec-ws-publicos-api-standard
     
+    # Mapea el puerto 80 del host al puerto 8080 del contenedor
     ports:
       - "9880:9880"
       
-    # Volumen persistente para la salida
+    # Volumen persistente para la base de datos (si usas SQLite)
+    # Crea una carpeta local './output' y la mapea al /app del contenedor
     volumes:
       - /home/ubuntu/wspublico:/app 
       
