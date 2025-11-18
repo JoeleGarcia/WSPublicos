@@ -35,6 +35,6 @@ ENV ASPNETCORE_URLS=http://+:9880
 
 EXPOSE 9880
 # ENTRYPOINT ["./APEC.WSPublicos.API"]
-ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["ls"]
 
 CMD ["/bin/sh", "-c", "echo Running..."]
