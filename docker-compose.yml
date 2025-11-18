@@ -11,6 +11,6 @@ services:
       
     # Volumen persistente para la salida
     volumes:
-      - ./output-aot:/app 
+      - /home/ubuntu/wspublico:/app 
       
     restart: always
